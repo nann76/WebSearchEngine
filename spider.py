@@ -75,12 +75,14 @@ def spider():
         content=''
         for item in data_list:
             text=re.sub('[\r \n\t]', '', item.get_text())
+            text = re.sub('[\s]', '', text)
             if text==None or text=='':
                 continue
             content+=text
         data_list = soup.select('body')
         for item in data_list:
             text=re.sub('[\r \n\t]', '', item.get_text())
+            text = re.sub('[\s]', '', text)
             if text==None or text=='':
                 continue
             #print(text)
@@ -199,7 +201,7 @@ def load():
     with open(os.path.join(dir_path, "pkl_dir/" + "url_linkto_dict.pkl"), 'rb') as doc:
         url_linkto=pkl.load(doc)
 
-       
+
 if __name__ == "__main__":
 
 
