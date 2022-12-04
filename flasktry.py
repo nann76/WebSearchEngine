@@ -7,9 +7,36 @@ usr_pd={}
 usr_pd['1']="1"
 
 
+'''
+{% if page_num == page_of_blogs.number %}
+    <li class="active">
+        <span>{{ page_num }}</span>
+    </li>
+{% else %}
+    <li>
+        <a href="?page={{ page_num }}">{{ page_num }}</a>
+    </li>
+{% endif %}
+'''
+
+@app.route('/',methods=['POST','GET'])
+def result():
+    p1=['http://cc.nankai.edu.cn/13256/list.htm','学院概况','fgtftydytrdtdty']
+    p2 = ['http://cc.nankai.edu.cn/13256/list.htm', '学院概sdfdsf', 'fgtftydy888888888888888trdtdty']
+    page=[]
+    page.append(p1)
+    page.append(p2)
+
+
+    return render_template('result.html',page_list=page)
+
+
+'''
 @app.route('/')
 def login():
     return render_template('login.html')
+ '''
+
 
 @app.route('/judge',methods=['POST'])
 def judge():
