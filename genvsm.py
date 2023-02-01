@@ -69,8 +69,11 @@ def genContentVSM():
 
     # print(tfidf_vectorizer.get_feature_names_out().shape)
 
-    # with open(os.path.join(dir_path, "pkl_dir/" + 'tfidf.pkl'), 'wb') as doc:
-    #     pkl.dump(tfidf_vectorizer.get_feature_names_out(), doc)
+    with open(os.path.join(dir_path, "pkl_dir/" + 'tfidf_vectorizer.pkl'), 'wb') as doc:
+         pkl.dump(tfidf_vectorizer, doc)
+
+    with open(os.path.join(dir_path, "pkl_dir/" + 'tfidf.pkl'), 'wb') as doc:
+         pkl.dump(tfidf_matrix, doc)
 
     with open(os.path.join(dir_path, "pkl_dir/" + 'words_bag.pkl'), 'wb') as doc:
         pkl.dump(tfidf_vectorizer.get_feature_names_out(), doc)

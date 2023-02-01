@@ -18,7 +18,7 @@ usr_pd['1']="1"
     </li>
 {% endif %}
 '''
-
+'''
 @app.route('/',methods=['POST','GET'])
 def result():
     p1=['http://cc.nankai.edu.cn/13256/list.htm','学院概况','fgtftydytrdtdty']
@@ -30,25 +30,40 @@ def result():
 
     return render_template('result.html',page_list=page)
 
-
 '''
+
 @app.route('/')
-def login():
+def start():
     return render_template('login.html')
- '''
 
 
-@app.route('/judge',methods=['POST'])
+
+@app.route('/login',methods=['POST'])
 def judge():
    user = request.form['nm']
    password= request.form['pd']
 
    if user in list(usr_pd.keys()):
          if password==usr_pd[user]:
-            return "login in"
-
+            # return "login in"
+            return render_template('search.html')
    #return "login false"
    return render_template('login.html')
+
+
+@app.route('/turn_to_register',methods=['POST'])
+def turn_to_register():
+   return render_template('register.html')
+
+@app.route('/register',methods=['POST'])
+def register():
+
+   user = request.form['nm']
+   password= request.form['pd']
+
+   print((user,password))
+   return render_template('login.html')
+
 
 
 '''
@@ -64,7 +79,7 @@ def login():
    else:
       user = request.args.get('nm')
       return redirect(url_for('success',name = user))
-'''
 
+'''
 if __name__ == '__main__':
    app.run()
