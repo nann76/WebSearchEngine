@@ -15,7 +15,7 @@ def wildcardLookup(st, wbags):
     # matches=[string for string in wbags if re.match(see, string)]
 
     matches=[string for string in wbags if match( string,st)]
-    print(matches)
+    # print(matches)
     return  matches
 
 

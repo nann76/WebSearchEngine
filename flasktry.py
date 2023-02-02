@@ -32,10 +32,23 @@ def result():
 
 '''
 
+# @app.route('/')
+# def start():
+#     return render_template('login.html')
+
 @app.route('/')
 def start():
-    return render_template('login.html')
+    return render_template('choose.html')
 
+@app.route('/choose',methods=['POST'])
+def choose():
+   joy = request.form.getlist('cb')
+   # joy = request.form['checkboxOne']
+   # joy2 = request.form['checkboxTwo']
+   print(joy)
+   # print(joy2)
+
+   return render_template('choose.html')
 
 
 @app.route('/login',methods=['POST'])

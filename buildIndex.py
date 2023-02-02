@@ -141,13 +141,13 @@ def query_Title():
             new_list.append(dict(result1))
     return  new_list
 
-def query_Content():
+def query_Content(query):
     new_list = []
     index = open_dir(dir_index_path, indexname='url_content_source')  # 读取建立好的索引
 
     with index.searcher() as searcher:
         parser = QueryParser("content", index.schema)
-        myquery = parser.parse("复杂场景下的高性能流体模拟技术")
+        myquery = parser.parse(query)
         facet = FieldFacet("url", reverse=True)  # 按序排列搜索结果
         results = searcher.search(myquery, limit=None, sortedby=facet)  # limit为搜索结果的限制，默认为10，详见博客开头的官方文档
         print(results)

@@ -7,10 +7,11 @@ class UserUnit:
 
 
     def __init__(self):
-        self.username=[]
-        self.password=[]
-        self.histort_of_search=[[]]
+        # self.username=[]
+        # self.password=[]
+        # self.histort_of_search=[[]]
         self.usr_pd = {}
+        self.usr_hobby={}
         self.usr_hs = {}
     def load(self):
 
@@ -18,9 +19,10 @@ class UserUnit:
             self.usr_pd =pkl.load( doc)
         with open(os.path.join(users_dir_path,  'usr_hs.pkl'), 'rb') as doc:
             self.usr_hs=pkl.load( doc)
+        with open(os.path.join(users_dir_path,  'usr_hobby.pkl'), 'rb') as doc:
+            self.usr_hobby=pkl.load( doc)
 
-
-    def save(self,pd,hs):
+    def save(self,pd,hs,hobby):
         # df1 = pd.DataFrame(data=url_archor_list, columns=["username", "password","histort_of_search"])
         # df1.to_csv(os.path.join(dir_path, 'archor_url.csv'), encoding='utf_8_sig')
         self.usr_pd=pd
@@ -29,4 +31,5 @@ class UserUnit:
             pkl.dump(self.usr_pd, doc)
         with open(os.path.join(users_dir_path,  'usr_hs.pkl'), 'wb') as doc:
             pkl.dump(self.usr_hs, doc)
-
+        with open(os.path.join(users_dir_path,  'usr_hobby.pkl'), 'wb') as doc:
+            pkl.dump(self.usr_hobby, doc)
