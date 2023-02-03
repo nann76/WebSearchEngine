@@ -10,6 +10,8 @@ import  IdMap
 import array
 import wildcarding
 import buildIndex
+import synonyms
+
 
 dir_path = "C:/Users/nan/Desktop/Web_Search_Engine/data/"
 dir_content_path="C:/Users/nan/Desktop/Web_Search_Engine/data/content"
@@ -49,21 +51,88 @@ def get_score(len, score, tf_idf_x, query):
 
 class Query:
 
-    def __init__(self):
+    def __init__(self ,hobby=None):
+
+        #content的tfidf和tfidf_vectorizer
         with open(os.path.join(dir_path, "pkl_dir/" + 'tfidf_vectorizer.pkl'), 'rb') as doc:
             self.content_tfidf_vectorizer=pkl.load(doc)
-
         with open(os.path.join(dir_path, "pkl_dir/" + 'tfidf.pkl'), 'rb') as doc:
             self.content_tfidf=pkl.load(doc)
 
+        #url_id_map
         self.url_id_map=IdMap.IdMap()
-
         with open(os.path.join(dir_path, "pkl_dir/" + 'url_id_map.pkl'), 'rb') as doc:
             self.url_id_map = pkl.load(doc)
 
+        #词袋
         with open(os.path.join(dir_path, "pkl_dir/" + 'words_bag.pkl'), 'rb') as doc:
             self.words_bag = pkl.load(doc)
+        #url的pagerank
+        with open(os.path.join(dir_path, "pkl_dir/" + 'pageRRank.pkl'), 'rb') as doc:
+            self.pageRank = pkl.load(doc)
 
+        self.hobby=hobby
+
+    #个性化查询
+    def add_personal_queries(self,qr,hobby=None,history=None,para_hobby=10,para_history=20):
+
+        str_hobby=''
+        for i in hobby:
+            str_hobby+=i+' '
+        str_history=''
+        for i in history:
+            str_history+=i+' '
+
+        url_score_hobby=Query.common_query(str_hobby)
+        url_score_history=Query.common_query(str_history)
+
+
+        qr_keys=qr.keys()
+        url_score_hobby_keys=url_score_hobby.keys()
+        url_score_history_keys=url_score_history.keys()
+
+        for key in url_score_hobby_keys:
+            if key in qr_keys:
+                qr[key]+=url_score_hobby[key]/para_hobby
+
+        for key in url_score_history_keys:
+            if key in qr_keys:
+                qr[key]+=url_score_history[key]/para_history
+
+    #个性化推荐
+    def add_personal_recommendation(self ,qr,hobby=None,history=None):
+
+        # url_score=Query.common_query(self,hobby)
+        # after_add_personal_recommendation = dict(qr)
+        # after_add_personal_recommendation.update(url_score)
+        # print(after_add_personal_recommendation)
+        # set(after_add_personal_recommendation)
+        # return  after_add_personal_recommendation
+
+        for h in hobby:
+
+            hh=synonyms.display(h)
+            print(hh)
+
+
+    def add_pageRank(self,qr,para=100):
+        # print(type(self.pageRank))
+        # print(self.pageRank)
+
+        for temp in qr.keys():
+            # print(qr[temp],self.pageRank[temp])
+            qr[temp]+=self.pageRank[temp]/para
+            # print(qr[temp])
+
+    def query_result_sort(self,url_score):
+
+        # 根据相关性得分排序，去除得分为0文档，其他文档按从大到小排序
+        new_url_score = sorted(url_score.items(), key=lambda score: score[1], reverse=True)
+        sorted_score_id = [score[0] for score in new_url_score ]
+        # new_url_score = sorted(url_score.values())
+        print(new_url_score)
+        print(sorted_score_id)
+        return new_url_score, sorted_score_id
 
     #常规站内查找
     def common_query(self,query):
@@ -107,13 +176,16 @@ class Query:
         set(url_score)
 
         print(url_score)
-        # 根据相关性得分排序，去除得分为0文档，其他文档按从大到小排序
-        new_url_score = sorted(url_score.items(), key=lambda score: score[1], reverse=True)
-        sorted_score_id = [score[0] for score in new_url_score ]
-        # new_url_score = sorted(url_score.values())
-        print(new_url_score)
-        print(sorted_score_id)
-        return new_url_score,sorted_score_id
+
+        return  url_score
+
+        # # 根据相关性得分排序，去除得分为0文档，其他文档按从大到小排序
+        # new_url_score = sorted(url_score.items(), key=lambda score: score[1], reverse=True)
+        # sorted_score_id = [score[0] for score in new_url_score ]
+        # # new_url_score = sorted(url_score.values())
+        # print(new_url_score)
+        # print(sorted_score_id)
+        # return new_url_score,sorted_score_id
 
 
     #通配查找
@@ -184,10 +256,27 @@ class Query:
 if __name__ =="__main__":
     u=Query()
 
-    q="袁晓洁"
-    q='网络攻防与系统安全'
-    u.common_query(q)
+
+    q = "袁晓洁"
+    qr = u.common_query(q)
+    hobby = ['本科生', '计算机科学与技术']
+    u.add_personal_recommendation(qr,hobby=hobby)
+
+    # q="袁晓洁"
+    # # q='网络攻防与系统安全'
+    # hobby=['本科生','计算机科学与技术']
+    # st=''
+    # for i in hobby:
+    #     st+=i+' '
+    # print(st)
+    # qr=u.common_query(q)
+    # pc=u.add_personal_recommendation(qr,st)
+    # u.add_pageRank(pc)
+    # u.query_result_sort(pc)
+
+
+
     # q2='袁*'
     # u.wildcard_query(q2)
-    q='网络攻防与系统安全'
-    u.pharse_query(q)
+    # q='网络攻防与系统安全'
+    # u.pharse_query(q)

@@ -1,10 +1,23 @@
 from flask import Flask, redirect, url_for, request,render_template
 from flask import render_template
+import queryUnit
+import UserUnit
+
+
+
 app = Flask(__name__)
 
 
 usr_pd={}
 usr_pd['1']="1"
+
+global_user=UserUnit.UserUnit()
+global_user.load()
+
+username=''
+usr_pd = {}
+usr_hobby = {}
+usr_hs = {}
 
 
 '''
@@ -52,14 +65,12 @@ def choose():
 
 
 @app.route('/login',methods=['POST'])
-def judge():
-   user = request.form['nm']
+def login():
+   username = request.form['nm']
    password= request.form['pd']
 
-   if user in list(usr_pd.keys()):
-         if password==usr_pd[user]:
-            # return "login in"
-            return render_template('search.html')
+   if global_user.login_judge(username,password):
+      return render_template('search.html')
    #return "login false"
    return render_template('login.html')
 
