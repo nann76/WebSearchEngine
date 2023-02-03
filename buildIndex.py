@@ -126,13 +126,28 @@ def build_Content_Index():
 
 
 
-def query_Title():
+def query_Title(query):
     new_list = []
     index = open_dir(dir_index_path, indexname='url_title_source')  # 读取建立好的索引
 
     with index.searcher() as searcher:
         parser = QueryParser("title", index.schema)
-        myquery = parser.parse("")
+        myquery = parser.parse(query)
+        facet = FieldFacet("url", reverse=True)  # 按序排列搜索结果
+        results = searcher.search(myquery, limit=None, sortedby=facet)  # limit为搜索结果的限制，默认为10，详见博客开头的官方文档
+        print(results)
+        for result1 in results:
+            print(dict(result1))
+            new_list.append(dict(result1))
+    return  new_list
+
+def query_Archor(query):
+    new_list = []
+    index = open_dir(dir_index_path, indexname='url_archor_source')  # 读取建立好的索引
+
+    with index.searcher() as searcher:
+        parser = QueryParser("archor", index.schema)
+        myquery = parser.parse(query)
         facet = FieldFacet("url", reverse=True)  # 按序排列搜索结果
         results = searcher.search(myquery, limit=None, sortedby=facet)  # limit为搜索结果的限制，默认为10，详见博客开头的官方文档
         print(results)

@@ -1,0 +1,410 @@
+
+
+
+
+
+  
+
+
+
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="object-src 'self'">
+    <link rel="shortcut icon" href="/nk_portal/favicon.ico" type="image/x-icon" />
+<title>在线南开网上办事大厅</title>
+ <!-- about_hall -->
+<script type="text/javascript" src="/nk_portal/resources/js/jquery.min.js?version=bdbb694b-35e9-47e1-ba3b-74d82879ac59"></script>
+ 
+<script type="text/javascript" src="/nk_portal/resources/nku/js/tab.js?version=bdbb694b-35e9-47e1-ba3b-74d82879ac59"></script>
+<link href="/nk_portal/resources/nku/css/door.css?version=bdbb694b-35e9-47e1-ba3b-74d82879ac59" rel="stylesheet" type="text/css">
+ <!-- guide -->
+
+
+
+<link href="/nk_portal/resources/nku/Font-Awesome-3.2.1/css/font-awesome.min.css?version=bdbb694b-35e9-47e1-ba3b-74d82879ac59" rel="stylesheet" type="text/css">
+ <!-- index -->
+
+ <!-- service -->
+
+<script type="text/javascript" src="/nk_portal/resources/nku/js/jquery.featureList-1.0.0.js?version=bdbb694b-35e9-47e1-ba3b-74d82879ac59"></script>
+<script type="text/javascript" src="/nk_portal/resources/pagination/jquery.pagination.js?version=bdbb694b-35e9-47e1-ba3b-74d82879ac59"></script>
+<link href="/nk_portal/resources/pagination/pagination.css?version=bdbb694b-35e9-47e1-ba3b-74d82879ac59" rel="stylesheet" type="text/css" />
+
+
+
+<!--banner_js-->
+<script type="text/javascript">
+
+$(function(){
+
+	var $window = $(window),window_width = $window.width();
+
+	$('#js_banner, #js_banner_img li').width(window_width);
+
+	new $.Tab({
+
+		target: $('#js_banner_img li'),
+
+		effect: 'slide3d',
+
+		animateTime: 2000,
+
+		stay: 7500,
+
+		autoPlay: true,
+
+		merge: true,
+
+		prevBtn: $('#js_banner_pre'),
+
+		nextBtn: $('#js_banner_next')
+
+	});
+
+});
+
+</script>
+<!--banner_js-->
+
+<!--tab_js-->
+<script type="text/javascript"> 
+	function setTab(name,m,n){ 
+		for( var i=1;i<=n;i++){ 
+			var menu = document.getElementById(name+i); 
+			var showDiv = document.getElementById("cont_"+name+"_"+i); 
+			menu.className = i==m ?"on":""; 
+			showDiv.style.display = i==m?"block":"none"; 
+		} 
+	} 
+</script>
+<!--//tab_js-->
+<!--weixin_js-->
+<script type="text/javascript">
+	function  showImg(){
+		document.getElementById("wxImg").style.display='block';
+	}
+	function hideImg(){
+		document.getElementById("wxImg").style.display='none';
+	}
+</script>
+<!--//weixin_js-->
+<!--收起js-->
+<script   language="javascript">   
+      function   show_div(){   
+      var   obj_div=document.getElementById("starlist");   
+obj_div.style.display=(obj_div.style.display=='none')?'block':'none'; 
+      }    
+      function   hide_div(){
+      var   obj_div=document.getElementById("starlist");   
+obj_div.style.display=(obj_div.style.display=='none')?'block':'none';    
+   }
+</script> 
+<!--//收起js-->
+<!--收起的同时改变css_js-->
+<script type="text/javascript">
+window.onload = function(){
+	var obj = document.getElementById("vertical_close");
+	if(null != obj){
+		obj.onclick = function(){
+			obj.className = (obj.className == "vertical_close"?"vertical_open":"vertical_close")
+			obj.innerHTML = (obj.innerHTML == "收起"?"&nbsp;":"收起")
+		}
+	}
+}
+</script>
+<!--收起的同时改变css_js-->
+<script type="text/javascript">
+function getIndexUrl(){
+	$.ajax({
+		type:"post",
+		url:"/nk_portal/getUrl",
+		async: false,
+		success:function (data) {
+			$("#index_url").attr("href",data.nextToken);
+		}
+	});
+}
+
+$(function(){
+	/*var manage_url = "";
+	$("#manage_urli").attr("href",manage_url);*/
+});
+
+
+
+
+</script>
+
+
+</head>
+
+<body>
+	<div id="wrap">
+    	
+
+
+
+
+  
+
+
+
+<script type="text/javascript" src="/nk_portal/resources/nku/js/jquery.featureList-1.0.0.js?version=bdbb694b-35e9-47e1-ba3b-74d82879ac59"></script>
+
+<script type="text/javascript" src="/nk_portal/resources/nku/js/jquery.placeholder.js?version=bdbb694b-35e9-47e1-ba3b-74d82879ac59"></script>
+  <script>  
+     $(function(){  
+        /*  $('input[placeholder]').placeholder();   */
+    	 $("#keyword").placeholder();
+        
+        
+     });  
+</script>  
+ 
+
+<link href="/nk_portal/resources/nku/css/door.css?version=bdbb694b-35e9-47e1-ba3b-74d82879ac59" rel="stylesheet" type="text/css">
+<link href="/nk_portal/resources/nku/css/news.css?version=bdbb694b-35e9-47e1-ba3b-74d82879ac59" rel="stylesheet" type="text/css">
+
+<!--header-->
+		<div style="width:100%; background:#fff;">
+    	<div id="header">
+        	<a href="http://online.nankai.edu.cn/" target="_target">
+       			<img src="/nk_portal/resources/nku/images/logo.jpg" alt="" class="logo">
+            	<h1 class="header_title">在线南开网上办事大厅</h1>
+            </a>
+            <form action="service" class="search">
+            	<input type="text" name="keyword" id="keyword" value="" placeholder="请输入您想找的服务" class="text" >
+            	<input type="submit" class="btn" value="      ">
+            </form>
+            <p class="user"><a href="http://online.nankai.edu.cn/taskcenter/" target="_blank">用户登录</a></p>
+            <p class="school"><a href="http://www.nankai.edu.cn/" target="_blank">学校主页</a></p>
+        </div>
+        </div>
+        <!--//header-->
+
+      
+        <!--content-->
+        <div id="content">
+        	<!--item_menu-->
+            
+        	<div class="item_menu">
+        		<div style="width:1180px; margin:0 auto;">
+            	<ul style="width:75%; float:left;">
+                	<li class="click"><a href="/nk_portal/index">首页</a></li>
+                    <li><a href="/nk_portal/service?object=0&type=0&organize=0&keyword=">服务中心</a></li>
+                    <li><a href="http://online.nankai.edu.cn/taskcenter/" target="_blank">个人中心</a></li>                 
+                </ul>
+                <ul style=" font-size: 12px;/*position: relative;right: 0;*/float: right; text-align:right;/*position: absolute;right: 0;*/width: 25%;">
+                	
+                	<li><a href="/nk_portal/about_hall">关于大厅</a></li>
+                  <!--   <li><a href="http://online.nankai.edu.cn/file/853070bb-8a92-4b2f-8333-17f49148314c" target="_blank">新手指南</a></li> -->
+                </ul>
+                </div>
+            </div>
+            
+            <!--//item_menu-->
+            
+        	<!--banner-->
+        	<!-- <div id="js_banner" class="banner" style="width:1180px;"> -->
+        	<div class="banner" style="width:1180px;">
+            	<!--banner轮播-->
+            	<ul >
+                	<li><img src="/nk_portal/resources/nku/images/banner_1.jpg" alt="" class="img1"></li>
+            	</ul>
+                <!--//banner轮播-->
+                <!--work-->
+                <div class="work">
+                	<!--work_menu-->
+                	<div class="work_menu">
+                    	<dl class="work_nav">
+                        	<a href="/nk_portal/service?object=1&type=0&organize=0&keyword=">
+                        		<dt class="work_img"><img src="/nk_portal/resources/nku/images/work_nav1.png" alt=""></dt>
+                            	<dd>学生办事</dd>
+                            </a>
+                        </dl>
+                        <dl class="work_nav">
+                        	<a href="/nk_portal/service?object=2&type=0&organize=0&keyword=">
+                        		<dt class="work_img"><img src="/nk_portal/resources/nku/images/work_nav2.png" alt=""></dt>
+                            	<dd>教工办事</dd>
+                            </a>
+                        </dl>
+                        <dl class="work_nav">
+                        	<a href="/nk_portal/service?object=3&type=0&organize=0&keyword=">
+                        		<dt class="work_img"><img src="/nk_portal/resources/nku/images/work_nav3.png" alt=""></dt>
+                            	<dd>游客浏览</dd>
+                            </a>
+                        </dl>
+                    </div>
+                    <!--work_menu-->
+                </div>
+            </div>
+            <!--//banner-->
+            
+            <!--center-->
+            <div id="center">
+                <!--center_right-->
+                <div class="center_right">
+                	<!--service_menu-->
+                	
+                    <!--//service_menu-->
+                    <!--recommend-->
+                    <div class="recommend">
+                    	<div class="recommend_title">
+                        	<h2>推荐事项<span>/Recommended Service</span></h2>
+                            <p class="more"><a href="/nk_portal/service?object=0&type=0&organize=0&keyword=">更多>></a></p>
+                        </div>
+                         <div class="service_nav_index" style="margin-left:30px; margin-top:18px;">
+                         
+                            <a href="/nk_portal/guide?id=3ECB8B1D-CD0A-4D62-863D-B507F1FC8F42">
+                                <div class="nav_box">
+                                	  
+									
+										  <img src="https://online.nankai.edu.cn/file/bd4a5de6-e6e4-4509-b4fe-6125ff50b95e" alt="" class="nav_img"/>
+									 
+                                    <h2 class="nav_title">静态IP申请/变更</h2>
+                                    <p class="tag">党委网信办</p>
+                                </div>
+                            </a>
+                          
+                            <a href="/nk_portal/guide?id=F5D23109-B517-4853-95CD-8DDB0DC452CF">
+                                <div class="nav_box">
+                                	  
+									
+										  <img src="https://online.nankai.edu.cn/file/24dcf354-661a-4394-a56b-0609c0440cc7" alt="" class="nav_img"/>
+									 
+                                    <h2 class="nav_title">在职证明申请，因私出国（境）...</h2>
+                                    <p class="tag">人事处</p>
+                                </div>
+                            </a>
+                          
+                            <a href="/nk_portal/guide?id=3EDCB614-BE62-494D-9817-C1CDAF4BDB9A">
+                                <div class="nav_box">
+                                	  
+									
+										  <img src="https://online.nankai.edu.cn/file/68db21c2-329d-4619-8ef2-3be1dc236139" alt="" class="nav_img"/>
+									 
+                                    <h2 class="nav_title">域名申请/变更</h2>
+                                    <p class="tag">党委网信办</p>
+                                </div>
+                            </a>
+                          
+                            <a href="/nk_portal/guide?id=2CCE60E4-282F-4323-926A-70C16B180CAF">
+                                <div class="nav_box">
+                                	  
+									
+										  <img src="https://online.nankai.edu.cn/file/92dcb4cf-23ae-4cce-813b-44ba4d1eaa71" alt="" class="nav_img"/>
+									 
+                                    <h2 class="nav_title">学生出国/境退宿申请</h2>
+                                    <p class="tag">学生工作部</p>
+                                </div>
+                            </a>
+                          
+                            <a href="/nk_portal/guide?id=FB5A6B8F-FFA0-4F0E-BAE8-782DBC845B95">
+                                <div class="nav_box">
+                                	  
+									
+										  <img src="https://online.nankai.edu.cn/file/75ac45b0-fa90-47df-9d33-e2d7472aad2f" alt="" class="nav_img"/>
+									 
+                                    <h2 class="nav_title">学生退宿申请</h2>
+                                    <p class="tag">学生工作部</p>
+                                </div>
+                            </a>
+                          
+                        </div>
+                    </div>
+                    <!--//recommend-->
+                    <!--hot-->
+                    <div class="hot">
+                    	<div class="hot_title">
+                        	<h2>热门事项<Span>/Popular Service</Span></h2>
+                            <p class="more"><a href="/nk_portal/service?object=0&type=0&organize=0&keyword=">更多>></a></p>
+                        </div>
+                        <div class="service_nav_index" style="margin-left:30px; margin-top:18px;">
+                          
+                            <a href="/nk_portal/guide?id=75E1630C-6F3A-4319-94DC-2B26060C0859">
+                                <div class="nav_box">
+                               		  
+									
+										  <img src="https://online.nankai.edu.cn/file/e8136525-b094-4c43-acd8-40a531104d80" alt="" class="nav_img"/>
+									
+                                    <h2 class="nav_title">单位信息联络员申请</h2>
+                                    <p class="tag">党委网信办</p>
+                                </div>
+                            </a>
+                             
+                            <a href="/nk_portal/guide?id=45353F32-2E99-4917-A35C-BDE614BEE578">
+                                <div class="nav_box">
+                               		  
+									
+										  <img src="https://online.nankai.edu.cn/file/a7564644-675c-4039-9785-e06c9066e4c5" alt="" class="nav_img"/>
+									
+                                    <h2 class="nav_title">公共数据服务平台数据使用申请...</h2>
+                                    <p class="tag">党委网信办</p>
+                                </div>
+                            </a>
+                             
+                            <a href="/nk_portal/guide?id=6DCC1D78-7F3D-477B-9FBA-3ECF228658CD">
+                                <div class="nav_box">
+                               		  
+									
+										  <img src="https://online.nankai.edu.cn/file/7bc4d7db-2797-4fcb-8b2a-5f924f8b3959" alt="" class="nav_img"/>
+									
+                                    <h2 class="nav_title">学生出国（境）申请</h2>
+                                    <p class="tag">国际学术交流处</p>
+                                </div>
+                            </a>
+                             
+                            <a href="/nk_portal/guide?id=DFD38318-EEA7-4871-98C6-23BB3B74F1F1">
+                                <div class="nav_box">
+                               		  
+									
+										  <img src="https://online.nankai.edu.cn/file/11c422e9-2935-4ee3-80e7-b6605cb39621" alt="" class="nav_img"/>
+									
+                                    <h2 class="nav_title">学生短期出国项目申请</h2>
+                                    <p class="tag">国际学术交流处</p>
+                                </div>
+                            </a>
+                             
+                            <a href="/nk_portal/guide?id=8A52744B-54DC-4C9A-9193-65E9ADB77CC4">
+                                <div class="nav_box">
+                               		  
+									
+										  <img src="https://online.nankai.edu.cn/file/f2db04e0-9214-41ef-9de4-c4013b472109" alt="" class="nav_img"/>
+									
+                                    <h2 class="nav_title">公用电子邮箱申请</h2>
+                                    <p class="tag">党委网信办</p>
+                                </div>
+                            </a>
+                             
+                        </div>
+                    <!--//hot-->
+                </div>
+                <!--//center_right-->
+            </div>
+            <div style="clear:both;"></div>
+      </div>
+        
+ <!--footer-->
+        <div id="footer">
+        	<div class="footer_center">            	
+                <p>
+                	Copyright ©  2017-2018南开大学 <br />
+                    地址：天津市卫津路94号&nbsp;&nbsp;&nbsp;&nbsp;
+                    [300071]&nbsp;&nbsp;&nbsp;&nbsp;
+                    津教备0061号&nbsp;&nbsp;&nbsp;&nbsp;
+                    津ICP备12003308号-1<br />
+                    推荐使用IE8及以上、火狐、谷歌等主流浏览器
+                </p>
+            </div>
+        </div>
+        <!--//footer-->
+	</div>
+	</div>
+</body>
+</html>
+

@@ -67,28 +67,20 @@
     <tr>
     <td>
 
-        <a href="{{ page[0] }}">{{ page[1] }}</a>
-        <br>
+        <a href="{{ page[0] }}" target="_blank">{{ page[1] }}</a>
+
+
         <br>
         {{page[2]}}
         <br>
+        <form action="turn_to_web_page_snapshot">
+            <input type="hidden" required name="id"  value={{page[3]}}>
+            <button class="btn">网页快照
+            </button>
+        </form>
     </td>
 
     </tr>
-    <br>
-
-    <tr>
-        <td>
-    
-            <a href="{{ page[0] }}">{{ page[1] }}</a>
-            <br>
-            <br>
-            {{page[2]}}
-            <br>
-        </td>
-    
-        </tr>
-        <br>
 
     {% endfor %}
 {% endif %}

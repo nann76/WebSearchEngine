@@ -49,6 +49,34 @@ def get_score(len, score, tf_idf_x, query):
         score[i] = cosine_similarity(tf_idf_x[i], query)
 
 
+# url的id的list生成页面显示的page结构
+
+def urlid_to_page(idlist):
+    with open(os.path.join(dir_path, "pkl_dir/" + 'url_id_map.pkl'), 'rb') as doc:
+        url_id_map = pkl.load(doc)
+
+    title_df = buildIndex.read_csv(dir_path + '/' + 'title_url.csv')
+
+    page=[]
+    for id in idlist:
+
+        page_item=[]
+        page_item.append(url_id_map[id])
+
+        index=title_df[title_df.url ==url_id_map[id]].index.tolist()[0]
+
+        page_item.append(title_df.title.loc[index])
+
+        for content in open(dir_content_path + '/' + str(id) + '.txt', encoding='utf-8').readlines():
+            page_item.append(content[:100])
+
+        page_item.append(id)
+        page.append(page_item)
+
+    return page
+
+
+
 class Query:
 
     def __init__(self ,hobby=None):
@@ -83,8 +111,8 @@ class Query:
         for i in history:
             str_history+=i+' '
 
-        url_score_hobby=Query.common_query(str_hobby)
-        url_score_history=Query.common_query(str_history)
+        url_score_hobby=Query.common_query(self,str_hobby)
+        url_score_history=Query.common_query(self,str_history)
 
 
         qr_keys=qr.keys()
@@ -160,7 +188,9 @@ class Query:
         # new_url_score = sorted(url_score.values())
         print(new_url_score)
         print(sorted_score_id)
-        return new_url_score, sorted_score_id
+        # return new_url_score, sorted_score_id
+        return  sorted_score_id
+
 
     #常规站内查找
     def common_query(self,query):
@@ -254,18 +284,26 @@ class Query:
         set(list_url_id)
         set(url_score)
 
-        print(url_score)
-        # 根据相关性得分排序，去除得分为0文档，其他文档按从大到小排序
-        new_url_score = sorted(url_score.items(), key=lambda score: score[1], reverse=True)
-        sorted_score_id = [score[0] for score in new_url_score ]
-        # new_url_score = sorted(url_score.values())
-        print(new_url_score)
-        print(sorted_score_id)
-        return new_url_score,sorted_score_id
+        return  url_score
+
+        # print(url_score)
+        # # 根据相关性得分排序，去除得分为0文档，其他文档按从大到小排序
+        # new_url_score = sorted(url_score.items(), key=lambda score: score[1], reverse=True)
+        # sorted_score_id = [score[0] for score in new_url_score ]
+        # # new_url_score = sorted(url_score.values())
+        # print(new_url_score)
+        # print(sorted_score_id)
+        # return new_url_score,sorted_score_id
 
     #短语查询
-    def pharse_query(self,query):
-        q_list=buildIndex.query_Content(query)
+    def pharse_query(self,query,position_type):
+        q_list=[]
+        if position_type==0:
+            q_list = buildIndex.query_Content(query)
+        if position_type==1:
+            q_list = buildIndex.query_Title(query)
+        if position_type==2:
+            q_list = buildIndex.query_Archor(query)
 
         query_list=[]
         for q in q_list:
@@ -276,8 +314,51 @@ class Query:
             url_list.append(self.url_id_map[i])
         print(query_list)
         print(url_list)
+        return query_list
 
 
+
+
+    def query(self,input_query,query_type=0,positin_type=0,hobby=None,history=None):
+
+        page=[[]]
+        #短语查询
+        if query_type==1:
+            url_list=Query.pharse_query(self,query=input_query,position_type=positin_type)
+            print('url_list',url_list)
+            page=urlid_to_page(url_list)
+            return page
+
+        #通配查询
+        if query_type==2:
+            # 通配查询
+            url_score=Query.wildcard_query(self,input_query)
+            # 个性化查询
+            Query.add_personal_queries(self,qr=url_score,hobby=hobby,history=history)
+            # pageRank
+            Query.add_pageRank(self,qr=url_score)
+            # 得到排序后url的id的list
+            sorted_score_id=Query.query_result_sort(self,url_score)
+            page=urlid_to_page(sorted_score_id)
+            return page
+
+
+
+        #站内查询
+        if query_type == 3:
+            url_score = Query.common_query(self,input_query)
+
+            # # 个性化推荐
+            # Query.add_personal_queries(self, qr=url_score, hobby=hobby, history=history)
+
+            # 个性化查询
+            Query.add_personal_queries(self,qr=url_score,hobby=hobby,history=history)
+            # pageRank
+            Query.add_pageRank(self,qr=url_score)
+            # 得到排序后url的id的list
+            sorted_score_id=Query.query_result_sort(self,url_score)
+            page=urlid_to_page(sorted_score_id)
+            return page
 
 
 

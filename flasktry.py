@@ -5,6 +5,7 @@ import UserUnit
 
 
 
+
 app = Flask(__name__)
 
 
@@ -13,7 +14,7 @@ app = Flask(__name__)
 
 global_user=UserUnit.UserUnit()
 global_user.load()
-
+query_unit=queryUnit.Query()
 # global_user_name='root'
 usr_pd = {}
 usr_hobby = {}
@@ -54,6 +55,7 @@ def result():
 def start():
     # return render_template('login.html')
     return render_template('search.html')
+
 
 
 # 跳转至注册
@@ -101,18 +103,94 @@ def login():
    #return "login false"
    return render_template('login.html')
 
+#网页快照跳转
+@app.route('/turn_to_web_page_snapshot',methods=['POST','GET'])
+def turn_to_web_page_snapshot():
+   print('111111111111111111')
+   id = request.args.get('id')
+   print(id)
+   st='source_code/'+str(id)+'.html'
+   print(st)
+   # return  render_template('source_code/0.html')
+   return  render_template(st)
+
+   # return redirect('source_code/0.html')
+
 
 # 常规搜索
 @app.route('/common_search',methods=['POST'])
 def common_search():
    input_sr=request.form['input_search']
    print(input_sr)
+   page=query_unit.query(input_query=input_sr,query_type=3,hobby=[],history=[])
 
-# 高级搜索
+   print(page)
+
+   return  render_template('result.html', page_list=page)
+   # return  render_template('source_code/0.html')
+
+
+# 转到高级搜索
 @app.route('/turn_to_advanced_search')
 def turn_to_advanced_search():
    print('222')
    return render_template('advanced_search.html')
+
+
+# 高级搜索
+@app.route('/advanced_search',methods=['POST' ])
+def advanced_search():
+   print('gaojisouiss')
+   phrase=request.form['q1']
+   wildcard = request.form['q2']
+   inside_station = request.form['q3']
+   q4 = request.form['q4']
+   q5 = request.form.get('q5')
+   q6 = request.form['q6']
+
+
+   query=''
+   query_type=0
+   if phrase!='' and wildcard=='' and inside_station=='':
+      query=phrase
+      query_type=1
+   elif phrase == '' and wildcard != '' and inside_station == '':
+      query = wildcard
+      query_type=2
+   elif phrase == '' and wildcard == '' and inside_station != '':
+      query=inside_station
+      query_type=3
+
+
+
+   position_type=0
+   if q5==0:
+      position_type=0
+   if q5==1:
+      position_type=1
+   if q5==2:
+      position_type=2
+
+
+   print(phrase)
+   print(wildcard)
+   print(inside_station)
+   print(q4)
+   print(q5)
+   print(q6)
+   print(query)
+   print(query_type)
+   page=query_unit.query(input_query=query,query_type=query_type,positin_type=position_type,hobby=[],history=[])
+   print(page)
+
+   return  render_template('result.html', page_list=page)
+
+
+
+
+
+   #return render_template('advanced_search.html')
+
 
 
 # 高级搜索返回常规搜索
