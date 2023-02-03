@@ -10,7 +10,7 @@ import  IdMap
 import array
 import wildcarding
 import buildIndex
-import synonyms
+# import synonyms
 
 
 dir_path = "C:/Users/nan/Desktop/Web_Search_Engine/data/"
@@ -73,7 +73,7 @@ class Query:
 
         self.hobby=hobby
 
-    #个性化查询
+    #个性化查询,为不同的⽤户提供不同的内容排序
     def add_personal_queries(self,qr,hobby=None,history=None,para_hobby=10,para_history=20):
 
         str_hobby=''
@@ -100,21 +100,48 @@ class Query:
                 qr[key]+=url_score_history[key]/para_history
 
     #个性化推荐
-    def add_personal_recommendation(self ,qr,hobby=None,history=None):
+    # def add_personal_recommendation(self ,qr,hobby=None,history=None):
+    #
+    #
+    #
+    #     rec_hobby=[]
+    #     for h in hobby:
+    #         # hh=synonyms.display(h,size=3)
+    #         rec_hobby.extend(synonyms.nearby(h,size=5)[0])
+    #     print(rec_hobby)
+    #
+    #     # his=[]
+    #     # for h in history:
+    #     #     print(h)
+    #     #     query = re.sub(r"[{}、，。！？·【】）》；;《“”（-]+".format(punctuation), " ", h)
+    #     #     query = query.lower()
+    #     #     query_words = ' '.join(jieba.lcut_for_search(query))
+    #     #     his.append(query_words)
+    #     # print(his)
+    #
+    #
+    #     rec_history=[]
+    #     # for hh in history:
+    #     #     print('hh',hh)
+    #     #     h=synonyms.seg(hh)
+    #     #     print(h)
+    #     #     rec_history.append(synonyms.nearby(h, size=5)[0])
+    #     # print(rec_history)
+    #
+    #
+    #     st_hobby=''
+    #     for temp in rec_hobby:
+    #         st_hobby+=temp+' '
+    #
+    #     url_score=Query.common_query(self,st_hobby)
+    #     after_add_personal_recommendation = dict(qr)
+    #     after_add_personal_recommendation.update(url_score)
+    #     print(after_add_personal_recommendation)
+    #     set(after_add_personal_recommendation)
+    #     return  after_add_personal_recommendation
 
-        # url_score=Query.common_query(self,hobby)
-        # after_add_personal_recommendation = dict(qr)
-        # after_add_personal_recommendation.update(url_score)
-        # print(after_add_personal_recommendation)
-        # set(after_add_personal_recommendation)
-        # return  after_add_personal_recommendation
 
-        for h in hobby:
-
-            hh=synonyms.display(h)
-            print(hh)
-
-
+    #pageRank的分数加权
     def add_pageRank(self,qr,para=100):
         # print(type(self.pageRank))
         # print(self.pageRank)
@@ -124,6 +151,7 @@ class Query:
             qr[temp]+=self.pageRank[temp]/para
             # print(qr[temp])
 
+    #排序
     def query_result_sort(self,url_score):
 
         # 根据相关性得分排序，去除得分为0文档，其他文档按从大到小排序
@@ -258,9 +286,11 @@ if __name__ =="__main__":
 
 
     q = "袁晓洁"
-    qr = u.common_query(q)
+    # qr = u.common_query(q)
+    qr={}
     hobby = ['本科生', '计算机科学与技术']
-    u.add_personal_recommendation(qr,hobby=hobby)
+    history=['计算机','网络安全','南开大学关于2022年秋季学期研究生教学工作预案']
+    u.add_personal_recommendation(qr,hobby=hobby,history=history)
 
     # q="袁晓洁"
     # # q='网络攻防与系统安全'

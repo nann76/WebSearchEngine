@@ -331,10 +331,10 @@ body {
 
     <body>
         <div class="wrap">
-            <form action = "/result" method = "post">
+            <form action = "/common_search" method = "post">
             <div class="search">
                 
-               <input type="text" class="searchTerm" placeholder="搜索">
+               <input type="text" class="searchTerm" placeholder="搜索" required name="input_search">
                <button type="submit" class="searchButton">
                  <i class="fa fa-search"></i>
               </button>
@@ -361,7 +361,7 @@ body {
             </div>
 
             <div>
-                <form action="high-search">
+                <form action="turn_to_advanced_search">
                     <button class="btn">高级搜索
                         <span></span>
                         <span></span>
