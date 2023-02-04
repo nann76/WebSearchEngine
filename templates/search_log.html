@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>result</title>
+
+    <style>
+    html {
+        margin: 0;
+        padding: 0;
+    }
+    body {
+        display: flex;
+        height: 10vh;
+        background: #FFEFBA;
+        background: -webkit-linear-gradient(to right, #FFFFFF, #FFEFBA);
+        background: linear-gradient(to right, #FFFFFF, #FFEFBA);
+
+    }
+    table {
+
+        margin: 0 auto;
+        text-align: center;
+        border-spacing: 15px;
+        position: absolute;
+        left: 0%;
+        top: 10%;
+
+        }
+    table td {
+        text-align:left;
+        border-spacing: 10px;
+        border: 1px solid #cad9ea;
+        color: #666;
+        height: 30px;
+        font-size: large;
+        }
+
+        table tr:nth-child(odd)
+        {
+            background: #fff;
+        }
+        table tr:nth-child(even)
+        {
+            background: #F5FAFA;
+        }
+    </style>
+
+</head>
+<body>
+
+<table class="table">
+    {% if not page_list %}
+    <tr>
+    <td>
+        <br>
+        <br>
+        无历史查询日志。。。
+        <br>
+        <br>
+    </td>
+    </tr>
+{% else %}
+    {% for page in page_list %}
+
+
+    <tr>
+    <td>
+        <br>
+        {{page}}
+        <br>
+    </td>
+
+    </tr>
+
+    {% endfor %}
+{% endif %}
+</table>
+
+
+</body>
+</html>

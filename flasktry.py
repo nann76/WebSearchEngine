@@ -54,7 +54,7 @@ def result():
 @app.route('/')
 def start():
     # return render_template('login.html')
-    return render_template('search.html')
+    return render_template('login.html')
 
 
 
@@ -88,6 +88,7 @@ def choose():
    usr_hobby[global_user.user]=joy
    global_user.change_usr_hobby(usr_hobby)
    print(global_user.usr_hobby)
+   global_user.save()
 
    return render_template('login.html')
 
@@ -106,15 +107,12 @@ def login():
 #网页快照跳转
 @app.route('/turn_to_web_page_snapshot',methods=['POST','GET'])
 def turn_to_web_page_snapshot():
-   print('111111111111111111')
    id = request.args.get('id')
    print(id)
    st='source_code/'+str(id)+'.html'
    print(st)
-   # return  render_template('source_code/0.html')
    return  render_template(st)
 
-   # return redirect('source_code/0.html')
 
 
 # 常规搜索
@@ -122,12 +120,39 @@ def turn_to_web_page_snapshot():
 def common_search():
    input_sr=request.form['input_search']
    print(input_sr)
+   if input_sr!='':
+      usr_hs= global_user.get_usr_hs()
+      if global_user.user not in usr_hs.keys():
+         list=[]
+         list.append(input_sr)
+         usr_hs[global_user.user]=list
+      else:
+         usr_hs[global_user.user].append(input_sr)
+      global_user.change_usr_hs(usr_hs)
+      global_user.save()
    page=query_unit.query(input_query=input_sr,query_type=3,hobby=[],history=[])
 
-   print(page)
+   # print(page)
+   print(global_user.usr_hs[global_user.user])
+
+
 
    return  render_template('result.html', page_list=page)
    # return  render_template('source_code/0.html')
+
+
+
+
+# 转到查询日志
+@app.route('/turn_to_search_log',methods=['POST','GET'])
+def turn_to_search_log():
+   print('111')
+   search_log=global_user.get_usr_hs()
+   search_log=search_log[global_user.get_usr()]
+   search_log=reversed(search_log)
+   return render_template('search_log.html',page_list=search_log)
+
+
 
 
 # 转到高级搜索

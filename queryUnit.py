@@ -206,17 +206,17 @@ class Query:
         new_term_freq_matrix = self.content_tfidf_vectorizer.transform(query)
         print(new_term_freq_matrix)
         query_vec = np.array((new_term_freq_matrix.todense().tolist())[0])
-        print(query_vec)
+        # print(query_vec)
 
         # vsm计算得分
         print(self.content_tfidf.shape[1])
         num_doc=self.content_tfidf.shape[0]
         score = np.zeros(num_doc)
         tf_idf=self.content_tfidf.toarray()
-        print(tf_idf)
+        # print(tf_idf)
 
         get_score(num_doc,score,tf_idf,query_vec)
-        print(score)
+        # print(score)
 
         list_url_id = []
         list_url=[]
