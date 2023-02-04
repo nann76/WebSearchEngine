@@ -10,7 +10,7 @@ import  IdMap
 import array
 import wildcarding
 import buildIndex
-# import synonyms
+import synonyms
 
 
 dir_path = "C:/Users/nan/Desktop/Web_Search_Engine/data/"
@@ -111,9 +111,12 @@ class Query:
         for i in history:
             str_history+=i+' '
 
+        # print(str_hobby)
+        # print(str_history)
         url_score_hobby=Query.common_query(self,str_hobby)
         url_score_history=Query.common_query(self,str_history)
-
+        # print(url_score_hobby)
+        # print(url_score_history)
 
         qr_keys=qr.keys()
         url_score_hobby_keys=url_score_hobby.keys()
@@ -123,50 +126,60 @@ class Query:
             if key in qr_keys:
                 qr[key]+=url_score_hobby[key]/para_hobby
 
+
         for key in url_score_history_keys:
             if key in qr_keys:
                 qr[key]+=url_score_history[key]/para_history
 
-    #个性化推荐
-    # def add_personal_recommendation(self ,qr,hobby=None,history=None):
-    #
-    #
-    #
-    #     rec_hobby=[]
-    #     for h in hobby:
-    #         # hh=synonyms.display(h,size=3)
-    #         rec_hobby.extend(synonyms.nearby(h,size=5)[0])
-    #     print(rec_hobby)
-    #
-    #     # his=[]
-    #     # for h in history:
-    #     #     print(h)
-    #     #     query = re.sub(r"[{}、，。！？·【】）》；;《“”（-]+".format(punctuation), " ", h)
-    #     #     query = query.lower()
-    #     #     query_words = ' '.join(jieba.lcut_for_search(query))
-    #     #     his.append(query_words)
-    #     # print(his)
-    #
-    #
-    #     rec_history=[]
-    #     # for hh in history:
-    #     #     print('hh',hh)
-    #     #     h=synonyms.seg(hh)
-    #     #     print(h)
-    #     #     rec_history.append(synonyms.nearby(h, size=5)[0])
-    #     # print(rec_history)
-    #
-    #
-    #     st_hobby=''
-    #     for temp in rec_hobby:
-    #         st_hobby+=temp+' '
-    #
-    #     url_score=Query.common_query(self,st_hobby)
-    #     after_add_personal_recommendation = dict(qr)
-    #     after_add_personal_recommendation.update(url_score)
-    #     print(after_add_personal_recommendation)
-    #     set(after_add_personal_recommendation)
-    #     return  after_add_personal_recommendation
+
+    # 个性化推荐
+    def add_personal_recommendation(self ,qr,hobby=None,history=None):
+
+
+        print('start personal_recommendation')
+
+        #根据爱好标签
+        rec_hobby=[]
+        for h in hobby:
+            # hh=synonyms.display(h,size=3)
+            rec_hobby.extend(synonyms.nearby(h,size=5)[0])
+        print('rec hobby',rec_hobby)
+
+        # 根据查询历史
+        r_history=list(reversed(history))
+        if len(r_history)>5:
+            r_history=r_history[0:5]
+        rec_history = []
+        for hh in r_history:
+            h = jieba.lcut(hh)
+            for _ in h:
+                rec_history.extend(synonyms.nearby(_, size=3)[0])
+        print('rec history', rec_history)
+
+        st_hobby=''
+
+        for temp in rec_hobby:
+            st_hobby+=temp+' '
+        st_history=''
+        for temp in rec_history:
+            st_history+=temp+' '
+        # 推荐内容的查询
+        url_score_hobby=Query.common_query(self,st_hobby)
+        url_score_history=Query.common_query(self,st_history)
+
+        after_add_personal_recommendation = dict(qr)
+
+        for i in url_score_hobby.keys():
+            url_score_hobby[i] = url_score_hobby[i] / 10
+        for i in url_score_history.keys():
+            url_score_history[i] = url_score_history[i] / 50
+
+        after_add_personal_recommendation.update(url_score_hobby)
+        after_add_personal_recommendation.update(url_score_history)
+        set(after_add_personal_recommendation)
+        print(after_add_personal_recommendation)
+        print('end personal_recommendation')
+        return  after_add_personal_recommendation
 
 
     #pageRank的分数加权
@@ -349,7 +362,8 @@ class Query:
             url_score = Query.common_query(self,input_query)
 
             # # 个性化推荐
-            # Query.add_personal_queries(self, qr=url_score, hobby=hobby, history=history)
+            print('个性化推荐')
+            Query.add_personal_recommendation(self, qr=url_score, hobby=hobby, history=history)
 
             # 个性化查询
             Query.add_personal_queries(self,qr=url_score,hobby=hobby,history=history)

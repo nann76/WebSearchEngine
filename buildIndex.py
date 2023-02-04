@@ -129,7 +129,7 @@ def build_Content_Index():
 def query_Title(query):
     new_list = []
     index = open_dir(dir_index_path, indexname='url_title_source')  # 读取建立好的索引
-
+    print('query_Title')
     with index.searcher() as searcher:
         parser = QueryParser("title", index.schema)
         myquery = parser.parse(query)
@@ -144,7 +144,7 @@ def query_Title(query):
 def query_Archor(query):
     new_list = []
     index = open_dir(dir_index_path, indexname='url_archor_source')  # 读取建立好的索引
-
+    print('query_Archor')
     with index.searcher() as searcher:
         parser = QueryParser("archor", index.schema)
         myquery = parser.parse(query)
@@ -159,7 +159,7 @@ def query_Archor(query):
 def query_Content(query):
     new_list = []
     index = open_dir(dir_index_path, indexname='url_content_source')  # 读取建立好的索引
-
+    print('query_Content')
     with index.searcher() as searcher:
         parser = QueryParser("content", index.schema)
         myquery = parser.parse(query)

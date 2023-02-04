@@ -54,8 +54,8 @@ def result():
 @app.route('/')
 def start():
     # return render_template('login.html')
-    return render_template('login.html')
-
+    # return render_template('advanced_search.html')
+    return render_template('search.html')
 
 
 # 跳转至注册
@@ -115,22 +115,29 @@ def turn_to_web_page_snapshot():
 
 
 
-# 常规搜索
+# 常规站内搜索
 @app.route('/common_search',methods=['POST'])
 def common_search():
    input_sr=request.form['input_search']
    print(input_sr)
-   if input_sr!='':
-      usr_hs= global_user.get_usr_hs()
-      if global_user.user not in usr_hs.keys():
-         list=[]
-         list.append(input_sr)
-         usr_hs[global_user.user]=list
-      else:
-         usr_hs[global_user.user].append(input_sr)
-      global_user.change_usr_hs(usr_hs)
-      global_user.save()
-   page=query_unit.query(input_query=input_sr,query_type=3,hobby=[],history=[])
+   # if input_sr!='':
+   #    usr_hs= global_user.get_usr_hs()
+   #    if global_user.user not in usr_hs.keys():
+   #       list=[]
+   #       list.append(input_sr)
+   #       usr_hs[global_user.user]=list
+   #    else:
+   #       usr_hs[global_user.user].append(input_sr)
+      # global_user.change_usr_hs(usr_hs)
+      # global_user.save()
+   global_user.user = '1'
+   usr_hobby = global_user.get_usr_hobby()
+   hobby = usr_hobby[global_user.user]
+   print(hobby)
+   history = global_user.get_usr_hs()
+   history = history[global_user.user]
+   print(history)
+   page=query_unit.query(input_query=input_sr,query_type=3,hobby=hobby,history=history)
 
    # print(page)
    print(global_user.usr_hs[global_user.user])
@@ -165,7 +172,7 @@ def turn_to_advanced_search():
 # 高级搜索
 @app.route('/advanced_search',methods=['POST' ])
 def advanced_search():
-   print('gaojisouiss')
+
    phrase=request.form['q1']
    wildcard = request.form['q2']
    inside_station = request.form['q3']
@@ -189,11 +196,11 @@ def advanced_search():
 
 
    position_type=0
-   if q5==0:
+   if q5=='0':
       position_type=0
-   if q5==1:
+   if q5=='1':
       position_type=1
-   if q5==2:
+   if q5=='2':
       position_type=2
 
 
@@ -205,7 +212,16 @@ def advanced_search():
    print(q6)
    print(query)
    print(query_type)
-   page=query_unit.query(input_query=query,query_type=query_type,positin_type=position_type,hobby=[],history=[])
+   print(position_type)
+
+   global_user.user='1'
+   usr_hobby=global_user.get_usr_hobby()
+   hobby=usr_hobby[global_user.user]
+   print(hobby)
+   history=global_user.get_usr_hs()
+   history=history[global_user.user]
+   print(history)
+   page=query_unit.query(input_query=query,query_type=query_type,positin_type=position_type,hobby=hobby,history=history)
    print(page)
 
    return  render_template('result.html', page_list=page)
