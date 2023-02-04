@@ -53,9 +53,9 @@ def result():
 #开始
 @app.route('/')
 def start():
-    # return render_template('login.html')
+    return render_template('login.html')
     # return render_template('advanced_search.html')
-    return render_template('search.html')
+    # return render_template('search.html')
 
 
 # 跳转至注册
@@ -120,17 +120,18 @@ def turn_to_web_page_snapshot():
 def common_search():
    input_sr=request.form['input_search']
    print(input_sr)
-   # if input_sr!='':
-   #    usr_hs= global_user.get_usr_hs()
-   #    if global_user.user not in usr_hs.keys():
-   #       list=[]
-   #       list.append(input_sr)
-   #       usr_hs[global_user.user]=list
-   #    else:
-   #       usr_hs[global_user.user].append(input_sr)
-      # global_user.change_usr_hs(usr_hs)
-      # global_user.save()
-   global_user.user = '1'
+   if input_sr!='':
+      usr_hs= global_user.get_usr_hs()
+      if global_user.user not in usr_hs.keys():
+         list=[]
+         list.append(input_sr)
+         usr_hs[global_user.user]=list
+      else:
+         usr_hs[global_user.user].append(input_sr)
+   global_user.change_usr_hs(usr_hs)
+   global_user.save()
+
+   # global_user.user = '1'
    usr_hobby = global_user.get_usr_hobby()
    hobby = usr_hobby[global_user.user]
    print(hobby)
@@ -153,7 +154,7 @@ def common_search():
 # 转到查询日志
 @app.route('/turn_to_search_log',methods=['POST','GET'])
 def turn_to_search_log():
-   print('111')
+   # print('111')
    search_log=global_user.get_usr_hs()
    search_log=search_log[global_user.get_usr()]
    search_log=reversed(search_log)
@@ -165,7 +166,7 @@ def turn_to_search_log():
 # 转到高级搜索
 @app.route('/turn_to_advanced_search')
 def turn_to_advanced_search():
-   print('222')
+   # print('222')
    return render_template('advanced_search.html')
 
 
@@ -176,7 +177,7 @@ def advanced_search():
    phrase=request.form['q1']
    wildcard = request.form['q2']
    inside_station = request.form['q3']
-   q4 = request.form['q4']
+   # q4 = request.form['q4']
    q5 = request.form.get('q5')
    q6 = request.form['q6']
 
@@ -202,19 +203,21 @@ def advanced_search():
       position_type=1
    if q5=='2':
       position_type=2
+   if q5=='3':
+      position_type=3
 
 
    print(phrase)
    print(wildcard)
    print(inside_station)
-   print(q4)
+   # print(q4)
    print(q5)
    print(q6)
    print(query)
    print(query_type)
    print(position_type)
 
-   global_user.user='1'
+   # global_user.user='1'
    usr_hobby=global_user.get_usr_hobby()
    hobby=usr_hobby[global_user.user]
    print(hobby)

@@ -87,6 +87,12 @@ class Query:
         with open(os.path.join(dir_path, "pkl_dir/" + 'tfidf.pkl'), 'rb') as doc:
             self.content_tfidf=pkl.load(doc)
 
+        with open(os.path.join(dir_path, "pkl_dir/" + 'title_tfidf_vectorizer_matrix.pkl'), 'rb') as doc:
+            self.t_tfidf_vectorizer, self.t_tfidf_matrix= pkl.load(doc)
+
+        with open(os.path.join(dir_path, "pkl_dir/" + 'archor_tfidf_vectorizer_matrix.pkl'), 'rb') as doc:
+            self.a_tfidf_vectorizer, self.a_tfidf_matrix=pkl.load(doc)
+
         #url_id_map
         self.url_id_map=IdMap.IdMap()
         with open(os.path.join(dir_path, "pkl_dir/" + 'url_id_map.pkl'), 'rb') as doc:
@@ -206,26 +212,58 @@ class Query:
 
 
     #常规站内查找
-    def common_query(self,query):
+    def common_query(self,query,positin_type=0,type='common'):
         # 输入文本处理
-        query = re.sub(r"[{}、，。！？·【】）》；;《“”（-]+".format(punctuation), " ", query)
-        query = query.lower()
-        query_words = ' '.join(jieba.lcut_for_search(query))
-        query = []
-        query.append(query_words)
+        if type!='wildcard':
+            query = re.sub(r"[{}、，。！？·【】）》；;《“”（-]+".format(punctuation), " ", query)
+            query = query.lower()
+            query_words = ' '.join(jieba.lcut_for_search(query))
+            query = []
+            query.append(query_words)
         print(query)
 
+
+
+
         # 得到输入向量
-        new_term_freq_matrix = self.content_tfidf_vectorizer.transform(query)
-        print(new_term_freq_matrix)
-        query_vec = np.array((new_term_freq_matrix.todense().tolist())[0])
-        # print(query_vec)
+        if positin_type==0:
+            new_term_freq_matrix = self.content_tfidf_vectorizer.transform(query)
+            print(new_term_freq_matrix)
+            query_vec = np.array((new_term_freq_matrix.todense().tolist())[0])
+        if positin_type==1:
+            new_term_freq_matrix = self.t_tfidf_vectorizer.transform(query)
+            print(new_term_freq_matrix)
+            query_vec = np.array((new_term_freq_matrix.todense().tolist())[0])
+        if positin_type==2:
+            new_term_freq_matrix = self.a_tfidf_vectorizer.transform(query)
+            print(new_term_freq_matrix)
+            query_vec = np.array((new_term_freq_matrix.todense().tolist())[0])
+
+
 
         # vsm计算得分
-        print(self.content_tfidf.shape[1])
-        num_doc=self.content_tfidf.shape[0]
+        # print(self.content_tfidf.shape[1])
+        if positin_type==0:
+            num_doc=self.content_tfidf.shape[0]
+
+        if positin_type==1:
+            num_doc=self.t_tfidf_matrix.shape[0]
+
+        if positin_type==2:
+            num_doc=self.a_tfidf_matrix.shape[0]
+
+
         score = np.zeros(num_doc)
-        tf_idf=self.content_tfidf.toarray()
+
+        if positin_type==0:
+            tf_idf=self.content_tfidf.toarray()
+
+        if positin_type==1:
+            tf_idf=self.t_tfidf_matrix.toarray()
+
+        if positin_type==2:
+            tf_idf=self.a_tfidf_matrix.toarray()
+
         # print(tf_idf)
 
         get_score(num_doc,score,tf_idf,query_vec)
@@ -260,44 +298,47 @@ class Query:
 
 
     #通配查找
-    def wildcard_query(self,query):
+    def wildcard_query(self,query,positin_type=0):
 
         #通配根据输入在词袋中查找匹配的term
-        query=wildcarding.wildcardLookup(query,self.words_bag)
-        print(query)
+        wquery=wildcarding.wildcardLookup(query,self.words_bag)
+        print(wquery)
 
-        # 得到输入向量
-        new_term_freq_matrix = self.content_tfidf_vectorizer.transform(query)
-        print(new_term_freq_matrix)
-        query_vec = np.array((new_term_freq_matrix.todense().tolist())[0])
-        print(query_vec)
+        url_score=Query.common_query(self,query=wquery,positin_type=positin_type,type='wildcard')
+        return url_score
 
-        # vsm计算得分
-        print(self.content_tfidf.shape[1])
-        num_doc=self.content_tfidf.shape[0]
-        score = np.zeros(num_doc)
-        tf_idf=self.content_tfidf.toarray()
-        print(tf_idf)
-
-        get_score(num_doc,score,tf_idf,query_vec)
-        print(score)
-
-        list_url_id = []
-        list_url=[]
-        url_score={}
-
-        #得到得分大于零的url
-        for i in range(num_doc):
-            if   score[i]>0:
-                url_score[i]=score[i]
-                list_url_id.append(i)
-                list_url.append(self.url_id_map[i])
-
-        set(list_url)
-        set(list_url_id)
-        set(url_score)
-
-        return  url_score
+        # # 得到输入向量
+        # new_term_freq_matrix = self.content_tfidf_vectorizer.transform(query)
+        # print(new_term_freq_matrix)
+        # query_vec = np.array((new_term_freq_matrix.todense().tolist())[0])
+        # print(query_vec)
+        #
+        # # vsm计算得分
+        # print(self.content_tfidf.shape[1])
+        # num_doc=self.content_tfidf.shape[0]
+        # score = np.zeros(num_doc)
+        # tf_idf=self.content_tfidf.toarray()
+        # print(tf_idf)
+        #
+        # get_score(num_doc,score,tf_idf,query_vec)
+        # print(score)
+        #
+        # list_url_id = []
+        # list_url=[]
+        # url_score={}
+        #
+        # #得到得分大于零的url
+        # for i in range(num_doc):
+        #     if   score[i]>0:
+        #         url_score[i]=score[i]
+        #         list_url_id.append(i)
+        #         list_url.append(self.url_id_map[i])
+        #
+        # set(list_url)
+        # set(list_url_id)
+        # set(url_score)
+        #
+        # return  url_score
 
         # print(url_score)
         # # 根据相关性得分排序，去除得分为0文档，其他文档按从大到小排序
@@ -317,6 +358,8 @@ class Query:
             q_list = buildIndex.query_Title(query)
         if position_type==2:
             q_list = buildIndex.query_Archor(query)
+        if position_type==3:
+            q_list = buildIndex.query_Url(query)
 
         query_list=[]
         for q in q_list:
@@ -345,7 +388,7 @@ class Query:
         #通配查询
         if query_type==2:
             # 通配查询
-            url_score=Query.wildcard_query(self,input_query)
+            url_score=Query.wildcard_query(self,input_query,positin_type=positin_type)
             # 个性化查询
             Query.add_personal_queries(self,qr=url_score,hobby=hobby,history=history)
             # pageRank
@@ -359,7 +402,7 @@ class Query:
 
         #站内查询
         if query_type == 3:
-            url_score = Query.common_query(self,input_query)
+            url_score = Query.common_query(self,input_query,positin_type=positin_type)
 
             # # 个性化推荐
             print('个性化推荐')
@@ -378,14 +421,15 @@ class Query:
 
 if __name__ =="__main__":
     u=Query()
+    input='http://cc.nankai.edu.cn/13280/list.htm'
+    u.query(input_query=input,query_type=1,positin_type=3,hobby=[],history=[])
 
-
-    q = "袁晓洁"
-    # qr = u.common_query(q)
-    qr={}
-    hobby = ['本科生', '计算机科学与技术']
-    history=['计算机','网络安全','南开大学关于2022年秋季学期研究生教学工作预案']
-    u.add_personal_recommendation(qr,hobby=hobby,history=history)
+    # q = "袁晓洁"
+    # # qr = u.common_query(q)
+    # qr={}
+    # hobby = ['本科生', '计算机科学与技术']
+    # history=['计算机','网络安全','南开大学关于2022年秋季学期研究生教学工作预案']
+    # u.add_personal_recommendation(qr,hobby=hobby,history=history)
 
     # q="袁晓洁"
     # # q='网络攻防与系统安全'

@@ -75,6 +75,24 @@ def build_Archor_Index():
                 writer.add_document(url=url_temp, archor=archor_temp )
     writer.commit()
 
+def build_Url_Index():
+
+    id_map=read_IdMap(dir_pkl_path+'/'+'url_id_map.pkl')
+    # archor_url=read_csv(dir_path+'/'+'archor_url.csv')
+    # archor_url=archor_url.values.tolist()
+
+    # schema = Schema(url=NUMERIC(stored=True), archor=TEXT(stored=True, analyzer=ChineseAnalyzer()))  # 创建索引结构
+    schema = Schema(url=NUMERIC(stored=True), url_text=TEXT(stored=True))  # 创建索引结构
+
+
+    ix = create_in(os.path.join(dir_index_path), schema=schema, indexname='url_source')
+    writer = ix.writer()
+
+    for term in (id_map.str_to_id).keys():
+            # print(id_map[term],term)
+            writer.add_document(url=id_map[term], url_text=term )
+    writer.commit()
+
 def build_Content_Index():
 
     #id_map=read_IdMap(dir_pkl_path+'/'+'url_id_map.pkl')
@@ -173,14 +191,34 @@ def query_Content(query):
 
 
 
+def query_Url(query):
+
+    new_list = []
+    index = open_dir(dir_index_path, indexname='url_source')  # 读取建立好的索引
+    with index.searcher() as searcher:
+        parser = QueryParser("url_text", index.schema)
+        myquery = parser.parse(query)
+        facet = FieldFacet("url", reverse=True)  # 按序排列搜索结果
+        results = searcher.search(myquery, limit=None, sortedby=facet)  # limit为搜索结果的限制，默认为10，详见博客开头的官方文档
+        print(results)
+        for result1 in results:
+            print(dict(result1))
+            new_list.append(dict(result1))
+    return  new_list
+
+
 if __name__ =="__main__":
     #build_Title_Index()
     #build_Archor_Index()
 
    # print( query_Title()[0]['url'])
     #build_Content_Index()
-    print(query_Content()[0]['url'])
+    # print(query_Content()[0]['url'])
+    # build_Url_Index()
+    # query_Content('龙湖')
+    query_Url('http://cc.nankai.edu.cn/13280/list.htm')
 '''
+
 analyser = ChineseAnalyzer()  # 导入中文分词工具
 schema = Schema(phone_name=TEXT(stored=True, analyzer=analyser), price=NUMERIC(stored=True),
                 phoneid=ID(stored=True))  # 创建索引结构
