@@ -86,7 +86,7 @@ class Query:
             self.content_tfidf_vectorizer=pkl.load(doc)
         with open(os.path.join(dir_path, "pkl_dir/" + 'tfidf.pkl'), 'rb') as doc:
             self.content_tfidf=pkl.load(doc)
-
+        # titleh 和archor 的tfidf和tfidf_vectorizer
         with open(os.path.join(dir_path, "pkl_dir/" + 'title_tfidf_vectorizer_matrix.pkl'), 'rb') as doc:
             self.t_tfidf_vectorizer, self.t_tfidf_matrix= pkl.load(doc)
 
@@ -221,8 +221,6 @@ class Query:
             query = []
             query.append(query_words)
         print(query)
-
-
 
 
         # 得到输入向量
